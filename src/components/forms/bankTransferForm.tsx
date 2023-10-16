@@ -29,6 +29,7 @@ export const BankTransferForm = () => {
   const {
     handleSubmit,
     control,
+    reset,
     watch,
     register,
     setValue,
@@ -53,9 +54,9 @@ export const BankTransferForm = () => {
 
     setTimeout(() => {
       setFormSubmiting(false);
+      alert("Money successfuly transfered");
+      reset();
     }, 2000);
-
-    alert("Money successfuly transfered");
   };
 
   const payeeAccountInputHandler = async (e: string) => {
