@@ -9,20 +9,6 @@ export const onlinePaymentSchema = (selectedAccBalance: number) =>
       .required('This field is required')
       .min(0.01, 'Minimum value should be 0.01 or more')
       .max(selectedAccBalance, `Maximum value should be ${selectedAccBalance} or less`),
-
-    // amount: yup
-    //   .number()
-    //   .test(
-    //     'is-number-format',
-    //     'Invalid number format. Please enter a valid number.',
-    //     (value) => {
-    //       if (typeof value === 'undefined' || value === null) return false;
-    //       return /^[0-9]+$/.test(value.toString());
-    //     }
-    //   )
-    //   .required('This field is required')
-    //   .min(0.01, 'Minimum value should be 0.01 or more')
-    //   .max(selectedAccBalance, `Maximum value should be ${selectedAccBalance} or less`),
     purpose: yup
     .string()
     .required('This field is required')
@@ -30,7 +16,8 @@ export const onlinePaymentSchema = (selectedAccBalance: number) =>
     .max(135, 'Maximum length should be 135 characters or less').trim(),
     payeeAccount: yup
     .string()
-    .required('This field is required'),
+    .required('This field is required')
+    .matches(/^LT\d{18}$/, "Please follow the format LT followed by 18 digits."),
     payeeName: yup
     .string()
     .required('This field is required')

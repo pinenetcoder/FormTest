@@ -9,6 +9,7 @@ export type TControllerInput = {
   error: string;
   type: string;
   disabled?: boolean;
+  currentLanguage?: string;
 };
 
 export const ControllerInput = ({
@@ -63,6 +64,11 @@ const StyledFormInput = styled(TextField)({
     },
   },
 
+  "& .MuiFormHelperText-root": {
+    position: "absolute",
+    bottom: "-24px",
+  },
+
   "& .MuiInputBase-root": {
     "&.Mui-disabled": {
       "& fieldset": {
@@ -84,6 +90,7 @@ const StyledFormInput = styled(TextField)({
 
     "& fieldset": {
       border: "1px solid #a0b3b0",
+      borderRadius: "12px",
     },
 
     "&.Mui-focused fieldset": {

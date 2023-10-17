@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 
 import { MenuItem, TextField, styled } from "@mui/material";
 import { Control, Controller } from "react-hook-form";
+import { usFormattedNumber } from "../../utils/helpers";
 
 interface IAccount {
   iban: string;
@@ -33,22 +34,6 @@ export const ControllerSelect = ({
   ...rest
 }: IControllerSelect) => {
   const list = selectOptions.map((item) => item.iban);
-  const usFormattedNumber = (number: number) => {
-    if (currentLanguage === "en") {
-      return number.toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
-    } else {
-      return number
-        .toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })
-        .replace(",", " ")
-        .replace(".", ",");
-    }
-  };
 
   return (
     <Controller
@@ -76,7 +61,8 @@ export const ControllerSelect = ({
               value={option}
               disabled={selectOptions[idx].balance < 0.01}
             >
-              {option} ({usFormattedNumber(selectOptions[idx].balance)})
+              {option} (
+              {usFormattedNumber(selectOptions[idx].balance, currentLanguage)})
             </MenuItem>
           ))}
         </StyledSelector>
@@ -113,6 +99,7 @@ const StyledSelector = styled(TextField)({
 
     "& fieldset": {
       border: "1px solid #a0b3b0",
+      borderRadius: "12px",
     },
 
     "&.Mui-focused fieldset": {

@@ -68,7 +68,16 @@ const StyledFormInput = styled(TextField)({
     },
   },
 
+  "& .MuiFormHelperText-root": {
+    position: "absolute",
+    bottom: "-24px",
+  },
+
   "& .MuiInputBase-root": {
+    "& .MuiInputBase-input": {
+      paddingRight: "40px",
+    },
+
     "& input.MuiInputBase-input:-internal-autofill-selected": {
       appearance: "menulist-button",
       backgroundImage: "none !important",
@@ -96,6 +105,7 @@ const StyledFormInput = styled(TextField)({
 
     "& fieldset": {
       border: "1px solid #a0b3b0",
+      borderRadius: "12px",
     },
 
     "&.Mui-focused fieldset": {
