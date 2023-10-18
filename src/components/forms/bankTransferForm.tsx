@@ -8,25 +8,32 @@ import { payerAccounts } from "../../data/accountDetails";
 import { useEffect, useState } from "react";
 import ControlledSearch from "../inputs/ControlledSearch";
 import CheckIcon from "@mui/icons-material/Check";
-import { accountValidityChecker } from "../../utils/helpers";
+import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
+import {
+  accountValidityChecker,
+  checkLTIBANMatch,
+  tate,
+} from "../../utils/helpers";
+import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 export const BankTransferForm = () => {
-  const [currentLanguage, setCurrentLanguage] = useState("en");
+  const {
+    t,
+    i18n: { changeLanguage, language },
+  } = useTranslation();
 
-  const handleChangeLanguage = () => {
-    const newLanguage = currentLanguage === "en" ? "lt" : "en";
-    setCurrentLanguage(newLanguage);
-  };
-
+  const [currentLanguage, setCurrentLanguage] = useState(language);
   const [selectedAccBalance, setSelectedAccBalance] = useState<
     number | undefined
   >(undefined);
   const [formSubmiting, setFormSubmiting] = useState(false);
   const [aproveAccountIcon, setAproveAccountIcon] = useState(false);
 
-  const checkMatch = (inputString: string) => {
-    const pattern = /^LT\d{18}$/;
-    return pattern.test(inputString);
+  const handleChangeLanguage = () => {
+    const newLanguage = currentLanguage === "en" ? "lt" : "en";
+    setCurrentLanguage(newLanguage);
+    changeLanguage(newLanguage);
   };
 
   const {
@@ -39,7 +46,9 @@ export const BankTransferForm = () => {
     setError,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(onlinePaymentSchema(Number(selectedAccBalance))),
+    resolver: yupResolver(
+      onlinePaymentSchema(Number(selectedAccBalance), tate, t, currentLanguage)
+    ),
     mode: "onChange",
     defaultValues: {
       payerAccount: "",
@@ -58,7 +67,7 @@ export const BankTransferForm = () => {
     setTimeout(() => {
       setFormSubmiting(false);
       setAproveAccountIcon(false);
-      alert("Money successfuly transfered");
+      toast.success("Money successfuly transfered");
       reset();
     }, 2000);
   };
@@ -66,7 +75,7 @@ export const BankTransferForm = () => {
   const payeeAccountInputHandler = async (e: string) => {
     setValue("payeeAccount", e);
 
-    if (checkMatch(e)) {
+    if (checkLTIBANMatch(e)) {
       setError("payeeAccount", "" as ErrorOption);
 
       if (await accountValidityChecker(e)) {
@@ -82,6 +91,8 @@ export const BankTransferForm = () => {
     }
   };
 
+  // ZAKONCHI TRANSLATION i DOBAV STATE
+
   useEffect(() => {
     const theOneBalance = payerAccounts.filter(
       (acc) => acc.iban === watchedPayerAccount
@@ -91,52 +102,71 @@ export const BankTransferForm = () => {
 
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)}>
-      <Box
-        sx={{ color: "#fff", cursor: "pointer", textTransform: "uppercase" }}
-        onClick={handleChangeLanguage}
-      >
+      <StyledLanguageSelector onClick={handleChangeLanguage}>
         {currentLanguage}
-      </Box>
-      <StyledFormTitle>BANK TRANSFER</StyledFormTitle>
+      </StyledLanguageSelector>
+      <StyledFormTitle>{tate(t, "title")}</StyledFormTitle>
 
-      <Stack flexDirection="row" justifyContent="center" sx={{ gap: "14px" }}>
+      <Stack
+        flexDirection="row"
+        mb="2rem"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ gap: "24px" }}
+      >
         <StyledPayerBox>
-          <Box mb="2rem">
+          <StyledPayerBoxTitle>{tate(t, "payerBoxTitle")}</StyledPayerBoxTitle>
+          <Stack flexDirection="row" mb="2rem" gap="10px" position="relative">
             <ControllerSelect
               name="payerAccount"
               selectOptions={payerAccounts}
               defaultValue=""
               control={control}
-              label="Payer account"
+              label={tate(t, "payerAccountLabel")}
               error={errors?.payerAccount?.message as string}
               disabled={formSubmiting}
               currentLanguage={currentLanguage}
             />
-          </Box>
-          <Box mb="2rem">
             <ControllerInput
-              label="Transfer amount"
+              label={tate(t, "transferAmountLabel")}
               name="amount"
               type="number"
               disabled={!selectedAccBalance || formSubmiting}
               error={errors?.amount?.message as string}
               control={control as unknown as Control}
               currentLanguage={currentLanguage}
+              styles={{
+                width: "130px",
+                "& .MuiFormHelperText-root": {
+                  position: "absolute",
+                  width: "300px",
+                  bottom: "-24px",
+                  right: 0,
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  mr: 0,
+                },
+              }}
             />
-          </Box>
+          </Stack>
+
           <Box>
             <ControllerInput
-              label="Transfer purpose"
+              label={tate(t, "transferPurposeLabel")}
               name="purpose"
               type="text"
               disabled={!selectedAccBalance || formSubmiting}
               error={errors?.purpose?.message as string}
               control={control as unknown as Control}
+              currentLanguage={currentLanguage}
             />
           </Box>
         </StyledPayerBox>
 
+        <StyledChevronIcon />
+
         <StyledPayerBox>
+          <StyledPayerBoxTitle>{tate(t, "payeeBoxTitle")}</StyledPayerBoxTitle>
           <Box mb="2rem" position="relative">
             <ControlledSearch
               height="3.5rem"
@@ -145,7 +175,7 @@ export const BankTransferForm = () => {
               disabled={!selectedAccBalance || formSubmiting}
               type="text"
               register={register}
-              placeholder="Payee account"
+              placeholder={tate(t, "payeeAccountLabel")}
               error={errors?.payeeAccount?.message}
             />
             {aproveAccountIcon && <StyledCheckAccountNumberIcon />}
@@ -153,7 +183,7 @@ export const BankTransferForm = () => {
 
           <Box mb="2rem">
             <ControllerInput
-              label="Payee name"
+              label={tate(t, "payeeNameLabel")}
               name="payeeName"
               type="text"
               disabled={!selectedAccBalance || formSubmiting}
@@ -161,32 +191,31 @@ export const BankTransferForm = () => {
               control={control as unknown as Control}
             />
           </Box>
-          <StyledFormButton
-            variant="outlined"
-            type="submit"
-            disabled={!selectedAccBalance || formSubmiting}
-          >
-            {formSubmiting ? (
-              <CircularProgress
-                size="1rem"
-                color="inherit"
-                sx={{ mr: "16px" }}
-              />
-            ) : null}
-            SEND
-          </StyledFormButton>
         </StyledPayerBox>
       </Stack>
+      <StyledFormButton
+        variant="outlined"
+        type="submit"
+        disabled={!selectedAccBalance || formSubmiting}
+      >
+        {formSubmiting ? (
+          <CircularProgress size="1rem" color="inherit" sx={{ mr: "16px" }} />
+        ) : null}
+        {tate(t, "sendButton")}
+      </StyledFormButton>
     </StyledForm>
   );
 };
 
 const StyledForm = styled("form")({
-  border: "1px solid lightgrey",
-  boxShadow: "0px 0px 18px 4px rgba(0,0,0,0.75)",
-  width: "70.5rem",
+  boxShadow: "0px 0px 20px 2px rgba(0,0,0,0.75)",
+  width: "65rem",
+  height: "100vh",
   padding: "2.5rem",
   borderRadius: "0.5rem",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
 });
 
 const StyledFormTitle = styled("h1")({
@@ -214,10 +243,11 @@ const StyledPayerBox = styled(Box)({
   border: "1px solid #a0b3b0",
   background: "#13232f",
   borderRadius: "24px",
-  width: "450px",
-  minHeight: "200px",
-  padding: "30px 20px",
+  width: "460px",
+  height: "224px",
+  padding: "40px 20px 24px",
   boxSizing: "border-box",
+  position: "relative",
 });
 
 const StyledCheckAccountNumberIcon = styled(CheckIcon)({
@@ -225,4 +255,31 @@ const StyledCheckAccountNumberIcon = styled(CheckIcon)({
   right: "10px",
   top: "16px",
   color: "lime",
+});
+const StyledPayerBoxTitle = styled("h3")({
+  margin: "0",
+  position: "absolute",
+  top: "10px",
+  fontSize: "14px",
+  textTransform: "uppercase",
+  color: "#868686",
+});
+
+const StyledChevronIcon = styled(DoubleArrowIcon)({
+  color: "#13232f",
+  fontSize: "60px",
+});
+
+const StyledLanguageSelector = styled(Box)({
+  color: "#13232f",
+  fontWeight: "600",
+  cursor: "pointer",
+  textTransform: "uppercase",
+  background: "#fff",
+  width: "36px",
+  height: "36px",
+  borderRadius: "100%",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
 });

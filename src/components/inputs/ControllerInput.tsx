@@ -9,7 +9,8 @@ export type TControllerInput = {
   error: string;
   type: string;
   disabled?: boolean;
-  currentLanguage?: string;
+  currentLanguage?: string | undefined;
+  styles?: any;
 };
 
 export const ControllerInput = ({
@@ -19,6 +20,7 @@ export const ControllerInput = ({
   type,
   error,
   disabled,
+  styles,
 }: TControllerInput) => {
   const [labelState, setLabelState] = useState(false);
 
@@ -28,6 +30,7 @@ export const ControllerInput = ({
       control={control}
       render={({ field: { onChange, value } }) => (
         <StyledFormInput
+          sx={styles}
           fullWidth
           disabled={disabled}
           error={!!error}

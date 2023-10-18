@@ -1,27 +1,28 @@
 import * as yup from 'yup';
+import { usFormattedNumber } from '../utils/helpers';
 
-export const onlinePaymentSchema = (selectedAccBalance: number) =>
+export const onlinePaymentSchema = (selectedAccBalance: number, tate: (t:any, key: string)=>string, t: any, language: string) =>
   yup.object().shape({
-    payerAccount: yup.string().required('This field is required').trim(),
+    payerAccount: yup.string().required(tate(t, 'requiredField')).trim(),
     amount: yup
       .number()
-      .typeError('Please enter an amount number')
-      .required('This field is required')
-      .min(0.01, 'Minimum value should be 0.01 or more')
-      .max(selectedAccBalance, `Maximum value should be ${selectedAccBalance} or less`),
+      .typeError(tate(t, 'amountValidation'))
+      .required(tate(t, 'requiredField'))
+      .min(0.01, tate(t, "amountMinimum"))
+      .max(selectedAccBalance, `${tate(t, 'maxMesagePt1')} ${usFormattedNumber(selectedAccBalance, language) } ${tate(t, 'maxMesagePt2')}`),
     purpose: yup
     .string()
-    .required('This field is required')
-    .min(3, 'Minimum length should be 3 characters or more')
-    .max(135, 'Maximum length should be 135 characters or less').trim(),
+    .required(tate(t, 'requiredField'))
+    .min(3, tate(t, 'min3Chars'))
+    .max(135, tate(t, 'max135Chars')).trim(),
     payeeAccount: yup
     .string()
-    .required('This field is required')
-    .matches(/^LT\d{18}$/, "Please follow the format LT followed by 18 digits."),
+    .required(tate(t, 'requiredField'))
+    .matches(/^LT\d{18}$/, tate(t, 'ltIBANFormatWorning')),
     payeeName: yup
     .string()
-    .required('This field is required')
-    .max(70, 'Maximum length should be 70 characters or less').trim(),
+    .required(tate(t, 'requiredField'))
+    .max(70, tate(t, 'max75Chars')).trim(),
   });
 
 export default onlinePaymentSchema;

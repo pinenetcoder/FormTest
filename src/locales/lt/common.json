@@ -1,0 +1,23 @@
+{
+  "translations": {
+    "title": "TIESIOGINIS BANKO PEVEDIMAS",
+    "payerAccountLabel": "Mokėtojo sąskaita",
+    "transferAmountLabel": "Suma",
+    "transferPurposeLabel": "Perdavimo tikslas",
+    "payeeAccountLabel": "Gavėjo sąskaita",
+    "payeeNameLabel": "Gavėjo vardas",
+    "sendButton": "Siųsti",
+    "maxMesagePt1": "Didžiausia vertė turi būti ",
+    "maxMesagePt2": "arba mažesnė",
+    "payerBoxTitle": "Siuntėjas",
+    "payeeBoxTitle": "Gavėjas",
+
+    "requiredField": "Šis laukas yra būtinas",
+    "amountValidation": "Įveskite sumos numerį",
+    "amountMinimum": "Minimali vertė turi būti 0,01 ar daugiau",
+    "min3Chars": "Mažiausias ilgis turi būti 3 ar daugiau simbolių",
+    "max135Chars": "Didžiausias ilgis turi būti 135 simboliai arba mažiau",
+    "ltIBANFormatWorning": "Laikykitės formato LT ir 18 skaitmenų",
+    "max75Chars": "Didžiausias ilgis turi būti 70 ar mažiau simbolių"
+  }
+}
