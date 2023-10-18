@@ -10,10 +10,10 @@ function App() {
 }
 
 const StyledMain = styled("main")({
-  background: "#c1bdba",
+  // background: "#c1bdba",
   height: "100vh",
   display: "flex",
-  alignItems: "center",
+  // alignItems: "center",
   justifyContent: "center",
 });
 

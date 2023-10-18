@@ -4,7 +4,6 @@ import { Control, ErrorOption, useForm } from "react-hook-form";
 import { onlinePaymentSchema } from "../../schemas/onlinePaymentSchema";
 import { ControllerInput } from "../inputs/ControllerInput";
 import { ControllerSelect } from "../inputs/ControllerSelect";
-import { payerAccounts } from "../../data/accountDetails";
 import { useEffect, useState } from "react";
 import ControlledSearch from "../inputs/ControlledSearch";
 import CheckIcon from "@mui/icons-material/Check";
@@ -13,9 +12,12 @@ import {
   accountValidityChecker,
   checkLTIBANMatch,
   tate,
+  usFormattedNumber,
 } from "../../utils/helpers";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { actions } from "../../store/accounts/accounts.slice";
 
 export const BankTransferForm = () => {
   const {
@@ -24,11 +26,20 @@ export const BankTransferForm = () => {
   } = useTranslation();
 
   const [currentLanguage, setCurrentLanguage] = useState(language);
-  const [selectedAccBalance, setSelectedAccBalance] = useState<
-    number | undefined
-  >(undefined);
+  const [selectedAccount, setSelectedAccount] = useState<{
+    iban: string;
+    id: string;
+    balance: number | undefined;
+  }>({
+    iban: "",
+    id: "",
+    balance: undefined,
+  });
   const [formSubmiting, setFormSubmiting] = useState(false);
   const [aproveAccountIcon, setAproveAccountIcon] = useState(false);
+
+  const { accounts } = useSelector((state) => state);
+  const dispatch = useDispatch();
 
   const handleChangeLanguage = () => {
     const newLanguage = currentLanguage === "en" ? "lt" : "en";
@@ -47,7 +58,12 @@ export const BankTransferForm = () => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(
-      onlinePaymentSchema(Number(selectedAccBalance), tate, t, currentLanguage)
+      onlinePaymentSchema(
+        Number(selectedAccount?.balance),
+        tate,
+        t,
+        currentLanguage
+      )
     ),
     mode: "onChange",
     defaultValues: {
@@ -60,8 +76,15 @@ export const BankTransferForm = () => {
   });
 
   const watchedPayerAccount = watch("payerAccount");
+  const watchedAmount = watch("amount");
 
-  const onSubmit = async () => {
+  const onSubmit = async (data: { payerAccount: any; amount: any }) => {
+    dispatch(
+      actions.getFromAccount({
+        account: data.payerAccount,
+        amount: data.amount,
+      })
+    );
     setFormSubmiting(true);
 
     setTimeout(() => {
@@ -91,14 +114,12 @@ export const BankTransferForm = () => {
     }
   };
 
-  // ZAKONCHI TRANSLATION i DOBAV STATE
-
   useEffect(() => {
-    const theOneBalance = payerAccounts.filter(
-      (acc) => acc.iban === watchedPayerAccount
-    )[0]?.balance;
-    setSelectedAccBalance(theOneBalance);
-  }, [watchedPayerAccount]);
+    const selectedAcc = accounts.filter(
+      (acc: { iban: string }) => acc.iban === watchedPayerAccount
+    )[0];
+    setSelectedAccount(selectedAcc);
+  }, [watchedPayerAccount, accounts]);
 
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)}>
@@ -110,7 +131,7 @@ export const BankTransferForm = () => {
       <Stack
         flexDirection="row"
         mb="2rem"
-        justifyContent="center"
+        justifyContent="space-between"
         alignItems="center"
         sx={{ gap: "24px" }}
       >
@@ -119,7 +140,7 @@ export const BankTransferForm = () => {
           <Stack flexDirection="row" mb="2rem" gap="10px" position="relative">
             <ControllerSelect
               name="payerAccount"
-              selectOptions={payerAccounts}
+              selectOptions={accounts}
               defaultValue=""
               control={control}
               label={tate(t, "payerAccountLabel")}
@@ -131,7 +152,7 @@ export const BankTransferForm = () => {
               label={tate(t, "transferAmountLabel")}
               name="amount"
               type="number"
-              disabled={!selectedAccBalance || formSubmiting}
+              disabled={!selectedAccount?.balance || formSubmiting}
               error={errors?.amount?.message as string}
               control={control as unknown as Control}
               currentLanguage={currentLanguage}
@@ -155,7 +176,7 @@ export const BankTransferForm = () => {
               label={tate(t, "transferPurposeLabel")}
               name="purpose"
               type="text"
-              disabled={!selectedAccBalance || formSubmiting}
+              disabled={!selectedAccount?.balance || formSubmiting}
               error={errors?.purpose?.message as string}
               control={control as unknown as Control}
               currentLanguage={currentLanguage}
@@ -172,7 +193,7 @@ export const BankTransferForm = () => {
               height="3.5rem"
               searchAction={payeeAccountInputHandler}
               name="payeeAccount"
-              disabled={!selectedAccBalance || formSubmiting}
+              disabled={!selectedAccount?.balance || formSubmiting}
               type="text"
               register={register}
               placeholder={tate(t, "payeeAccountLabel")}
@@ -186,43 +207,74 @@ export const BankTransferForm = () => {
               label={tate(t, "payeeNameLabel")}
               name="payeeName"
               type="text"
-              disabled={!selectedAccBalance || formSubmiting}
+              disabled={!selectedAccount?.balance || formSubmiting}
               error={errors?.payeeName?.message as string}
               control={control as unknown as Control}
             />
           </Box>
         </StyledPayerBox>
       </Stack>
-      <StyledFormButton
-        variant="outlined"
-        type="submit"
-        disabled={!selectedAccBalance || formSubmiting}
+
+      <Stack
+        flexDirection="row"
+        justifyContent={selectedAccount ? "space-between" : "flex-end"}
       >
-        {formSubmiting ? (
-          <CircularProgress size="1rem" color="inherit" sx={{ mr: "16px" }} />
-        ) : null}
-        {tate(t, "sendButton")}
-      </StyledFormButton>
+        {selectedAccount && (
+          <StyledTotalSection>
+            <StyledDataLine>
+              Available amount:{" "}
+              {usFormattedNumber(
+                Math.floor((selectedAccount?.balance / 1.02) * 100) / 100,
+                language
+              )}
+            </StyledDataLine>
+            <StyledDataLine>Commission: 2%</StyledDataLine>
+          </StyledTotalSection>
+        )}
+        <Box>
+          <StyledDataLine>
+            Total to pay:{" "}
+            {usFormattedNumber(
+              Math.floor(+watchedAmount * 1.02 * 100) / 100,
+              language
+            )}
+          </StyledDataLine>
+          <StyledFormButton
+            variant="outlined"
+            type="submit"
+            disabled={!selectedAccount?.balance || formSubmiting}
+          >
+            {formSubmiting ? (
+              <CircularProgress
+                size="1rem"
+                color="inherit"
+                sx={{ mr: "16px" }}
+              />
+            ) : null}
+            {tate(t, "sendButton")}
+          </StyledFormButton>
+        </Box>
+      </Stack>
     </StyledForm>
   );
 };
 
 const StyledForm = styled("form")({
-  boxShadow: "0px 0px 20px 2px rgba(0,0,0,0.75)",
+  // boxShadow: "0px 0px 20px 2px rgba(0,0,0,0.75)",
   width: "65rem",
   height: "100vh",
-  padding: "2.5rem",
+  padding: "0 2.5rem",
   borderRadius: "0.5rem",
   display: "flex",
   flexDirection: "column",
-  justifyContent: "center",
+  // justifyContent: "center",
 });
 
 const StyledFormTitle = styled("h1")({
-  color: "#ffffff",
+  color: "#13232f",
   fontSize: "2.5rem",
   lineHeight: "4rem",
-  marginBottom: "2rem",
+  margin: "0 0 2rem",
   textAlign: "center",
   textTransform: "uppercase",
   letterSpacing: "0.25rem",
@@ -230,12 +282,24 @@ const StyledFormTitle = styled("h1")({
 
 const StyledFormButton = styled(Button)({
   height: "56px",
-  width: "100%",
+  width: "460px",
   borderRadius: "12px",
+  borderColor: "transparent",
+  color: "#fff",
+  fontSize: "18px",
+  fontWeight: "bold",
+  background: "#13232f",
 
   "&:disabled": {
-    border: "1px solid rgba(160, 179, 176, 0.4)",
+    border: "1px solid #13232f",
     color: "#526267",
+    background: "#fff",
+    opacity: "0.5",
+  },
+
+  "&:hover": {
+    background: "#414f5a",
+    borderColor: "#1ab188",
   },
 });
 
@@ -262,7 +326,7 @@ const StyledPayerBoxTitle = styled("h3")({
   top: "10px",
   fontSize: "14px",
   textTransform: "uppercase",
-  color: "#868686",
+  color: "#fff",
 });
 
 const StyledChevronIcon = styled(DoubleArrowIcon)({
@@ -282,4 +346,16 @@ const StyledLanguageSelector = styled(Box)({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
+});
+
+const StyledTotalSection = styled(Box)({
+  boxSizing: "border-box",
+  padding: "10px",
+  // border: "1px solid #13232f",
+  borderRadius: "12px",
+  width: "460px",
+});
+const StyledDataLine = styled("h5")({
+  margin: "0 0 16px 0",
+  fontSize: "24px",
 });
