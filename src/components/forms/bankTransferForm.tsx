@@ -38,6 +38,7 @@ export const BankTransferForm = () => {
   const [formSubmiting, setFormSubmiting] = useState(false);
   const [aproveAccountIcon, setAproveAccountIcon] = useState(false);
 
+  // @ts-ignore
   const { accounts } = useSelector((state) => state);
   const dispatch = useDispatch();
 
@@ -68,6 +69,7 @@ export const BankTransferForm = () => {
     mode: "onChange",
     defaultValues: {
       payerAccount: "",
+      // @ts-ignore
       amount: "",
       purpose: "",
       payeeAccount: "",
