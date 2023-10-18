@@ -29,11 +29,11 @@ export const BankTransferForm = () => {
   const [selectedAccount, setSelectedAccount] = useState<{
     iban: string;
     id: string;
-    balance: number | undefined;
+    balance: number;
   }>({
     iban: "",
     id: "",
-    balance: undefined,
+    balance: 0,
   });
   const [formSubmiting, setFormSubmiting] = useState(false);
   const [aproveAccountIcon, setAproveAccountIcon] = useState(false);
@@ -128,13 +128,7 @@ export const BankTransferForm = () => {
       </StyledLanguageSelector>
       <StyledFormTitle>{tate(t, "title")}</StyledFormTitle>
 
-      <Stack
-        flexDirection="row"
-        mb="2rem"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{ gap: "24px" }}
-      >
+      <StyledCardsStack>
         <StyledPayerBox>
           <StyledPayerBoxTitle>{tate(t, "payerBoxTitle")}</StyledPayerBoxTitle>
           <Stack flexDirection="row" mb="2rem" gap="10px" position="relative">
@@ -213,9 +207,9 @@ export const BankTransferForm = () => {
             />
           </Box>
         </StyledPayerBox>
-      </Stack>
+      </StyledCardsStack>
 
-      <Stack
+      <StyledCardsStack
         flexDirection="row"
         justifyContent={selectedAccount ? "space-between" : "flex-end"}
       >
@@ -224,7 +218,7 @@ export const BankTransferForm = () => {
             <StyledDataLine>
               Available amount:{" "}
               {usFormattedNumber(
-                Math.floor((selectedAccount?.balance / 1.02) * 100) / 100,
+                Math.floor((selectedAccount.balance / 1.02) * 100) / 100,
                 language
               )}
             </StyledDataLine>
@@ -254,20 +248,18 @@ export const BankTransferForm = () => {
             {tate(t, "sendButton")}
           </StyledFormButton>
         </Box>
-      </Stack>
+      </StyledCardsStack>
     </StyledForm>
   );
 };
 
 const StyledForm = styled("form")({
-  // boxShadow: "0px 0px 20px 2px rgba(0,0,0,0.75)",
   width: "65rem",
   height: "100vh",
   padding: "0 2.5rem",
   borderRadius: "0.5rem",
   display: "flex",
   flexDirection: "column",
-  // justifyContent: "center",
 });
 
 const StyledFormTitle = styled("h1")({
@@ -312,6 +304,10 @@ const StyledPayerBox = styled(Box)({
   padding: "40px 20px 24px",
   boxSizing: "border-box",
   position: "relative",
+
+  "@media (max-width: 1050px)": {
+    margin: "0 0 8px 0",
+  },
 });
 
 const StyledCheckAccountNumberIcon = styled(CheckIcon)({
@@ -332,6 +328,10 @@ const StyledPayerBoxTitle = styled("h3")({
 const StyledChevronIcon = styled(DoubleArrowIcon)({
   color: "#13232f",
   fontSize: "60px",
+
+  "@media (max-width: 1050px)": {
+    transform: "rotate(90deg)",
+  },
 });
 
 const StyledLanguageSelector = styled(Box)({
@@ -350,12 +350,26 @@ const StyledLanguageSelector = styled(Box)({
 
 const StyledTotalSection = styled(Box)({
   boxSizing: "border-box",
-  padding: "10px",
-  // border: "1px solid #13232f",
   borderRadius: "12px",
   width: "460px",
 });
 const StyledDataLine = styled("h5")({
   margin: "0 0 16px 0",
   fontSize: "24px",
+
+  "@media (max-width: 1050px)": {
+    margin: "0 0 8px 0",
+  },
+});
+const StyledCardsStack = styled(Stack)({
+  flexDirection: "row",
+  marginBottom: "2rem",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "24px",
+
+  "@media (max-width: 1050px)": {
+    flexDirection: "column",
+    gap: "10px",
+  },
 });
