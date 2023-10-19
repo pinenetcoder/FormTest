@@ -264,16 +264,19 @@ export const BankTransferForm = () => {
 };
 
 const StyledForm = styled("form")({
-  width: "1128px",
+  width: "100%",
   height: "100vh",
   padding: "2rem 2.5rem",
   borderRadius: "0.5rem",
   display: "flex",
   flexDirection: "column",
 
+  "@media (max-width: 1050px)": {
+    height: "unset",
+  },
+
   "@media (max-width: 500px)": {
-    width: "100%",
-    padding: "32px 8px 64px 8px",
+    padding: "32px 16px 64px 16px",
   },
 });
 
@@ -391,12 +394,12 @@ const StyledCardsStack = styled(Stack)({
 const StyledDataStack = styled(Stack)({
   width: "460px",
   flexDirection: "row",
-  marginBottom: "2rem",
   alignSelf: "flex-end",
   alignItems: "center",
   gap: "16px",
 
   "@media (max-width: 1050px)": {
+    alignSelf: "center",
     flexDirection: "column",
     gap: "10px",
   },
