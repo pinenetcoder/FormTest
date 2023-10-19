@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { actions } from "../../store/accounts/accounts.slice";
+import { AmmountInput } from "../inputs/ControlledAmmountInput";
 
 export const BankTransferForm = () => {
   const {
@@ -69,8 +70,7 @@ export const BankTransferForm = () => {
     mode: "onChange",
     defaultValues: {
       payerAccount: "",
-      // @ts-ignore
-      amount: "",
+      amount: 0,
       purpose: "",
       payeeAccount: "",
       payeeName: "",
@@ -79,6 +79,8 @@ export const BankTransferForm = () => {
 
   const watchedPayerAccount = watch("payerAccount");
   const watchedAmount = watch("amount");
+  const watchedPayeeAcc = watch("payeeAccount");
+  const watchedPayeeName = watch("payeeName");
 
   const onSubmit = async (data: { payerAccount: any; amount: any }) => {
     dispatch(
@@ -98,19 +100,27 @@ export const BankTransferForm = () => {
   };
 
   const payeeAccountInputHandler = async (e: string) => {
-    setValue("payeeAccount", e);
+    if (e.replace(/\s/g, "") === "") {
+      setError("payeeAccount", {
+        type: "manual",
+        message: tate(t, "requiredField"),
+      });
+      setAproveAccountIcon(false);
+      return;
+    }
+    setValue("payeeAccount", e.replace(/\s/g, ""));
 
-    if (checkLTIBANMatch(e)) {
+    if (checkLTIBANMatch(e.replace(/\s/g, ""))) {
       setError("payeeAccount", "" as ErrorOption);
 
-      if (await accountValidityChecker(e)) {
+      if (await accountValidityChecker(e.replace(/\s/g, ""))) {
         setAproveAccountIcon(true);
         return;
       }
     } else {
       setError("payeeAccount", {
         type: "manual",
-        message: "Please follow the format LT followed by 18 digits.",
+        message: tate(t, "ltIBANFormatWorning"),
       });
       setAproveAccountIcon(false);
     }
@@ -126,7 +136,7 @@ export const BankTransferForm = () => {
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)}>
       <StyledLanguageSelector onClick={handleChangeLanguage}>
-        {currentLanguage}
+        {currentLanguage === "en" ? "lt" : "en"}
       </StyledLanguageSelector>
       <StyledFormTitle>{tate(t, "title")}</StyledFormTitle>
 
@@ -144,26 +154,13 @@ export const BankTransferForm = () => {
               disabled={formSubmiting}
               currentLanguage={currentLanguage}
             />
-            <ControllerInput
-              label={tate(t, "transferAmountLabel")}
+            <AmmountInput
               name="amount"
-              type="number"
+              control={control}
+              errors={errors}
               disabled={!selectedAccount?.balance || formSubmiting}
-              error={errors?.amount?.message as string}
-              control={control as unknown as Control}
               currentLanguage={currentLanguage}
-              styles={{
-                width: "130px",
-                "& .MuiFormHelperText-root": {
-                  position: "absolute",
-                  width: "300px",
-                  bottom: "-24px",
-                  right: 0,
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  mr: 0,
-                },
-              }}
+              label={tate(t, "transferAmountLabel")}
             />
           </Stack>
 
@@ -211,29 +208,40 @@ export const BankTransferForm = () => {
         </StyledPayerBox>
       </StyledCardsStack>
 
-      <StyledCardsStack
-        flexDirection="row"
-        justifyContent={selectedAccount ? "space-between" : "flex-end"}
-      >
-        {selectedAccount && (
-          <StyledTotalSection>
-            <StyledDataLine>
-              Available amount:{" "}
-              {usFormattedNumber(
-                Math.floor((selectedAccount.balance / 1.02) * 100) / 100,
-                language
+      <StyledDataStack>
+        <Box width="460px">
+          {selectedAccount && (
+            <>
+              <StyledDataLine>
+                {tate(t, "availableAmmount")}
+                {": "}
+                {usFormattedNumber(selectedAccount.balance, language)}
+              </StyledDataLine>
+              <StyledDataLine>
+                {tate(t, "sendersAccount")}
+                {": "}
+                {selectedAccount.iban}
+              </StyledDataLine>
+              {watchedPayeeName && (
+                <StyledDataLine>
+                  {tate(t, "recipientName")}
+                  {": "}
+                  {watchedPayeeName}
+                </StyledDataLine>
               )}
-            </StyledDataLine>
-            <StyledDataLine>Commission: 2%</StyledDataLine>
-          </StyledTotalSection>
-        )}
-        <Box>
+              {watchedPayeeAcc && (
+                <StyledDataLine>
+                  {tate(t, "recipientAccount")}
+                  {": "}
+                  {watchedPayeeAcc}
+                </StyledDataLine>
+              )}
+            </>
+          )}
           <StyledDataLine>
-            Total to pay:{" "}
-            {usFormattedNumber(
-              Math.floor(+watchedAmount * 1.02 * 100) / 100,
-              language
-            )}
+            {tate(t, "totalToPay")}
+            {": "}
+            {usFormattedNumber(+watchedAmount, language)}
           </StyledDataLine>
           <StyledFormButton
             variant="outlined"
@@ -250,15 +258,15 @@ export const BankTransferForm = () => {
             {tate(t, "sendButton")}
           </StyledFormButton>
         </Box>
-      </StyledCardsStack>
+      </StyledDataStack>
     </StyledForm>
   );
 };
 
 const StyledForm = styled("form")({
-  width: "65rem",
+  width: "1128px",
   height: "100vh",
-  padding: "0 2.5rem",
+  padding: "2rem 2.5rem 0",
   borderRadius: "0.5rem",
   display: "flex",
   flexDirection: "column",
@@ -350,14 +358,9 @@ const StyledLanguageSelector = styled(Box)({
   alignItems: "center",
 });
 
-const StyledTotalSection = styled(Box)({
-  boxSizing: "border-box",
-  borderRadius: "12px",
-  width: "460px",
-});
 const StyledDataLine = styled("h5")({
   margin: "0 0 16px 0",
-  fontSize: "24px",
+  fontSize: "20px",
 
   "@media (max-width: 1050px)": {
     margin: "0 0 8px 0",
@@ -369,6 +372,19 @@ const StyledCardsStack = styled(Stack)({
   justifyContent: "space-between",
   alignItems: "center",
   gap: "24px",
+
+  "@media (max-width: 1050px)": {
+    flexDirection: "column",
+    gap: "10px",
+  },
+});
+
+const StyledDataStack = styled(Stack)({
+  flexDirection: "row",
+  marginBottom: "2rem",
+  justifyContent: "flex-end",
+  alignItems: "center",
+  gap: "16px",
 
   "@media (max-width: 1050px)": {
     flexDirection: "column",

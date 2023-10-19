@@ -9,7 +9,7 @@ export const onlinePaymentSchema = (selectedAccBalance: number, tate: (t:any, ke
       .typeError(tate(t, 'amountValidation'))
       .required(tate(t, 'requiredField'))
       .min(0.01, tate(t, "amountMinimum"))
-      .max((selectedAccBalance / 1.02), `${tate(t, 'maxMesagePt1')} ${usFormattedNumber(selectedAccBalance / 1.02, language) } ${tate(t, 'maxMesagePt2')}`),
+      .max(selectedAccBalance, `${tate(t, 'maxMesagePt1')} ${usFormattedNumber(selectedAccBalance, language) } ${tate(t, 'maxMesagePt2')}`),
     purpose: yup
     .string()
     .required(tate(t, 'requiredField'))

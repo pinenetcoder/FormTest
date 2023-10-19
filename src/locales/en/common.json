@@ -1,9 +1,9 @@
 {
   "translations": {
-    "title": "DIRECT BANK TRANSFER",
+    "title": "New payment",
     "payerAccountLabel": "Payer account",
     "transferAmountLabel": "Amount",
-    "transferPurposeLabel": "Transfer purpose",
+    "transferPurposeLabel": "Payment description",
     "payeeAccountLabel": "Payee account",
     "payeeNameLabel": "Payee name",
     "sendButton": "Send",
@@ -18,6 +18,13 @@
     "min3Chars": "Minimum length should be 3 characters or more",
     "max135Chars": "Maximum length should be 135 characters or less",
     "ltIBANFormatWorning": "Please follow the format LT followed by 18 digits",
-    "max75Chars": "Maximum length should be 70 characters or less"
+    "max75Chars": "Maximum length should be 70 characters or less",
+
+    "availableAmmount": "Available amount",
+    "sendersAccount": "Senders Account",
+    "recipientName": "Recipient name",
+    "recipientAccount": "Recipient account",
+    "totalToPay": "Total to pay"
+    
   }
 }
