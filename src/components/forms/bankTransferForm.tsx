@@ -209,7 +209,7 @@ export const BankTransferForm = () => {
       </StyledCardsStack>
 
       <StyledDataStack>
-        <Box width="460px">
+        <Box width="100%">
           {selectedAccount && (
             <>
               <StyledDataLine>
@@ -266,10 +266,15 @@ export const BankTransferForm = () => {
 const StyledForm = styled("form")({
   width: "1128px",
   height: "100vh",
-  padding: "2rem 2.5rem 0",
+  padding: "2rem 2.5rem",
   borderRadius: "0.5rem",
   display: "flex",
   flexDirection: "column",
+
+  "@media (max-width: 500px)": {
+    width: "100%",
+    padding: "32px 8px 64px 8px",
+  },
 });
 
 const StyledFormTitle = styled("h1")({
@@ -284,7 +289,7 @@ const StyledFormTitle = styled("h1")({
 
 const StyledFormButton = styled(Button)({
   height: "56px",
-  width: "460px",
+  width: "100%",
   borderRadius: "12px",
   borderColor: "transparent",
   color: "#fff",
@@ -317,6 +322,10 @@ const StyledPayerBox = styled(Box)({
 
   "@media (max-width: 1050px)": {
     margin: "0 0 8px 0",
+  },
+
+  "@media (max-width: 500px)": {
+    width: "100%",
   },
 });
 
@@ -380,14 +389,19 @@ const StyledCardsStack = styled(Stack)({
 });
 
 const StyledDataStack = styled(Stack)({
+  width: "460px",
   flexDirection: "row",
   marginBottom: "2rem",
-  justifyContent: "flex-end",
+  alignSelf: "flex-end",
   alignItems: "center",
   gap: "16px",
 
   "@media (max-width: 1050px)": {
     flexDirection: "column",
     gap: "10px",
+  },
+
+  "@media (max-width: 500px)": {
+    width: "100%",
   },
 });
