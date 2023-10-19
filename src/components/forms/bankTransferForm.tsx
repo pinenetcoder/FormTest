@@ -19,6 +19,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { actions } from "../../store/accounts/accounts.slice";
 import { AmmountInput } from "../inputs/ControlledAmmountInput";
+import { RootState } from "../../store/store";
 
 export const BankTransferForm = () => {
   const {
@@ -39,8 +40,7 @@ export const BankTransferForm = () => {
   const [formSubmiting, setFormSubmiting] = useState(false);
   const [aproveAccountIcon, setAproveAccountIcon] = useState(false);
 
-  // @ts-ignore
-  const { accounts } = useSelector((state) => state);
+  const { accounts } = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
 
   const handleChangeLanguage = () => {

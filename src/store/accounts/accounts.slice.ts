@@ -1,10 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export interface IAccounts {
-  name: string;
-  initialState: Array<{iban: string; id: string; balance: number}>
-}
-
 export const accountsSlice = createSlice({
   name: 'accounts',
   initialState: [
