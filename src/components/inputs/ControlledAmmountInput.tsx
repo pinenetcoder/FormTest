@@ -36,7 +36,7 @@ export const AmmountInput = ({
       render={({ field }) => {
         return (
           <StyledAmountContainer maxWidth="130px">
-            <span className="p-float-label">
+            <StyledAmountError className="p-float-label">
               <InputNumber
                 disabled={disabled}
                 value={field.value || null}
@@ -48,7 +48,7 @@ export const AmmountInput = ({
                 maxFractionDigits={2}
               />
               <label htmlFor="username">{label}</label>
-            </span>
+            </StyledAmountError>
             {getFormErrorMessage(field.name)}
           </StyledAmountContainer>
         );
@@ -102,6 +102,15 @@ const StyledAmountContainer = styled(Stack)({
         borderColor: "#1ab188",
         boxShadow: "none",
       },
+    },
+  },
+});
+
+const StyledAmountError = styled("span")({
+  "& + small": {
+    "@media (max-width: 400px)": {
+      fontSize: "12px",
+      bottom: "-18px",
     },
   },
 });

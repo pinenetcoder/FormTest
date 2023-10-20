@@ -21,10 +21,10 @@
     "max75Chars": "Maximum length should be 70 characters or less",
 
     "availableAmmount": "Available amount",
-    "sendersAccount": "Senders Account",
+    "sendersAccount": "Senders account",
     "recipientName": "Recipient name",
     "recipientAccount": "Recipient account",
-    "totalToPay": "Total to pay"
+    "totalToPay": "Payment amount"
     
   }
 }

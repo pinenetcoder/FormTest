@@ -70,6 +70,11 @@ const StyledFormInput = styled(TextField)({
   "& .MuiFormHelperText-root": {
     position: "absolute",
     bottom: "-24px",
+
+    "@media (max-width: 400px)": {
+      bottom: "-28px",
+      lineHeight: "12px",
+    },
   },
 
   "& .MuiInputBase-root": {

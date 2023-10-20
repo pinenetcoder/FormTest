@@ -152,7 +152,12 @@ export const BankTransferForm = () => {
       <StyledCardsStack>
         <StyledPayerBox>
           <StyledPayerBoxTitle>{tate(t, "payerBoxTitle")}</StyledPayerBoxTitle>
-          <Stack flexDirection="row" mb="2rem" gap="10px" position="relative">
+          <StyledAccountLine
+            flexDirection="row"
+            mb="2.5rem"
+            gap="10px"
+            position="relative"
+          >
             <ControllerSelect
               name="payerAccount"
               selectOptions={accounts}
@@ -172,9 +177,9 @@ export const BankTransferForm = () => {
               currentLanguage={currentLanguage}
               label={tate(t, "transferAmountLabel")}
             />
-          </Stack>
+          </StyledAccountLine>
 
-          <Box>
+          <StyledDescBox>
             <ControllerInput
               label={tate(t, "transferPurposeLabel")}
               name="purpose"
@@ -184,14 +189,14 @@ export const BankTransferForm = () => {
               control={control as unknown as Control}
               currentLanguage={currentLanguage}
             />
-          </Box>
+          </StyledDescBox>
         </StyledPayerBox>
 
         <StyledChevronIcon />
 
         <StyledPayerBox>
           <StyledPayerBoxTitle>{tate(t, "payeeBoxTitle")}</StyledPayerBoxTitle>
-          <Box mb="2rem" position="relative">
+          <StyledDescBox mb="2rem" position="relative">
             <ControlledSearch
               height="3.5rem"
               searchAction={payeeAccountInputHandler}
@@ -203,7 +208,7 @@ export const BankTransferForm = () => {
               error={errors?.payeeAccount?.message}
             />
             {aproveAccountIcon && <StyledCheckAccountNumberIcon />}
-          </Box>
+          </StyledDescBox>
 
           <Box mb="2rem">
             <ControllerInput
@@ -345,6 +350,11 @@ const StyledPayerBox = styled(Box)({
   "@media (max-width: 500px)": {
     width: "100%",
   },
+
+  "@media (max-width: 400px)": {
+    height: "unset",
+    minHeight: "224px",
+  },
 });
 
 const StyledCheckAccountNumberIcon = styled(CheckIcon)({
@@ -396,11 +406,13 @@ const StyledLanguageSelector = styled(Box)({
 const StyledDataLine = styled("h5")({
   margin: "0 0 16px 0",
   fontSize: "20px",
+  wordBreak: "break-all",
 
   "@media (max-width: 1050px)": {
     margin: "0 0 8px 0",
   },
 });
+
 const StyledCardsStack = styled(Stack)({
   flexDirection: "row",
   marginBottom: "2rem",
@@ -429,5 +441,17 @@ const StyledDataStack = styled(Stack)({
 
   "@media (max-width: 500px)": {
     width: "100%",
+  },
+});
+
+const StyledDescBox = styled(Box)({
+  "@media (max-width: 400px)": {
+    marginBottom: "2.5rem",
+  },
+});
+
+const StyledAccountLine = styled(Stack)({
+  "@media (max-width: 400px)": {
+    marginBottom: "2.5rem",
   },
 });
