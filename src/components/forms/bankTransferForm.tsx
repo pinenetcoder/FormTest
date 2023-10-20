@@ -316,7 +316,7 @@ const StyledFormButton = styled(Button)({
   "&:disabled": {
     border: "1px solid #13232f",
     color: "#526267",
-    background: "#fff",
+    background: "transparent",
     opacity: "0.5",
   },
 
@@ -327,6 +327,8 @@ const StyledFormButton = styled(Button)({
 });
 
 const StyledPayerBox = styled(Box)({
+  boxShadow:
+    "rgba(0, 0, 0, 0.2) 0px 3px 5px -1px, rgba(0, 0, 0, 0.14) 0px 6px 10px 0px, rgba(0, 0, 0, 0.12) 0px 1px 18px 0px",
   border: "1px solid #a0b3b0",
   background: "#13232f",
   borderRadius: "24px",
@@ -374,13 +376,21 @@ const StyledLanguageSelector = styled(Box)({
   fontWeight: "600",
   cursor: "pointer",
   textTransform: "uppercase",
-  background: "#fff",
+  background: "transparent",
   width: "36px",
   height: "36px",
+  minWidth: "36px",
+  minHeight: "36px",
   borderRadius: "100%",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
+
+  "&:hover": {
+    transition: "box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+    boxShadow:
+      "rgba(0, 0, 0, 0.2) 0px 3px 5px -1px, rgba(0, 0, 0, 0.14) 0px 6px 10px 0px, rgba(0, 0, 0, 0.12) 0px 1px 18px 0px",
+  },
 });
 
 const StyledDataLine = styled("h5")({
