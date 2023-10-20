@@ -24,6 +24,6 @@
     "sendersAccount": "Mokėjimo paskirtis",
     "recipientName": "Gavėjo vardas",
     "recipientAccount": " Gavėjo sąskaita",
-    "totalToPay": "Mokėjimo paskirtis"
+    "totalToPay": "Mokėjimo suma"
   }
 }
