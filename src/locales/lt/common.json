@@ -21,7 +21,7 @@
     "max75Chars": "Didžiausias ilgis turi būti 70 ar mažiau simbolių",
 
     "availableAmmount": "Prieinamas likutis",
-    "sendersAccount": "Mokėjimo paskirtis",
+    "sendersAccount": "Mokėtojo sąskaita",
     "recipientName": "Gavėjo vardas",
     "recipientAccount": " Gavėjo sąskaita",
     "totalToPay": "Mokėjimo suma"

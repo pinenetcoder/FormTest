@@ -33,3 +33,19 @@ export const checkLTIBANMatch = (inputString: string) => {
 export const tate = (t: TFunction<"translation", undefined>, key: string) => {
   return t(`translations:${key}`)
 }
+
+
+export const currencyIconSelector = (acc: any) => {
+  if (acc) {
+    switch (acc.currency) {
+      case "eur":
+        return "€";
+      case "usd":
+        return "$";
+      case "chf":
+        return "₣";
+      default:
+        return "€";
+    }
+  }
+};

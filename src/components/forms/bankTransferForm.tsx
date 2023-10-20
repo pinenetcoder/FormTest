@@ -11,6 +11,7 @@ import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import {
   accountValidityChecker,
   checkLTIBANMatch,
+  currencyIconSelector,
   tate,
   usFormattedNumber,
 } from "../../utils/helpers";
@@ -224,7 +225,8 @@ export const BankTransferForm = () => {
               <StyledDataLine>
                 {tate(t, "availableAmmount")}
                 {": "}
-                {usFormattedNumber(selectedAccount.balance, language)} €
+                {usFormattedNumber(selectedAccount.balance, language)}{" "}
+                {currencyIconSelector(selectedAccount)}
               </StyledDataLine>
               <StyledDataLine>
                 {tate(t, "sendersAccount")}
@@ -250,7 +252,8 @@ export const BankTransferForm = () => {
           <StyledDataLine>
             {tate(t, "totalToPay")}
             {": "}
-            {usFormattedNumber(+watchedAmount, language)} €
+            {usFormattedNumber(+watchedAmount, language)}{" "}
+            {currencyIconSelector(selectedAccount)}
           </StyledDataLine>
           <StyledFormButton
             variant="outlined"

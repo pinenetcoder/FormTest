@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 import { MenuItem, TextField, styled } from "@mui/material";
 import { Control, Controller } from "react-hook-form";
-import { usFormattedNumber } from "../../utils/helpers";
+import { currencyIconSelector, usFormattedNumber } from "../../utils/helpers";
 
 interface IAccount {
   iban: string;
@@ -66,7 +66,7 @@ export const ControllerSelect = ({
             >
               {option} (
               {usFormattedNumber(selectOptions[idx].balance, currentLanguage)}{" "}
-              €)
+              {currencyIconSelector(selectOptions[idx])})
             </MenuItem>
           ))}
         </StyledSelector>
