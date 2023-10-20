@@ -126,6 +126,14 @@ export const BankTransferForm = () => {
     }
   };
 
+  const amountResetHandler = () => {
+    setValue("amount", 0);
+    setError("amount", {
+      type: "manual",
+      message: "",
+    });
+  };
+
   useEffect(() => {
     const selectedAcc = accounts.filter(
       (acc: { iban: string }) => acc.iban === watchedPayerAccount
@@ -153,6 +161,7 @@ export const BankTransferForm = () => {
               error={errors?.payerAccount?.message as string}
               disabled={formSubmiting}
               currentLanguage={currentLanguage}
+              handler={amountResetHandler}
             />
             <AmmountInput
               name="amount"
@@ -215,7 +224,7 @@ export const BankTransferForm = () => {
               <StyledDataLine>
                 {tate(t, "availableAmmount")}
                 {": "}
-                {usFormattedNumber(selectedAccount.balance, language)}
+                {usFormattedNumber(selectedAccount.balance, language)} €
               </StyledDataLine>
               <StyledDataLine>
                 {tate(t, "sendersAccount")}
@@ -241,7 +250,7 @@ export const BankTransferForm = () => {
           <StyledDataLine>
             {tate(t, "totalToPay")}
             {": "}
-            {usFormattedNumber(+watchedAmount, language)}
+            {usFormattedNumber(+watchedAmount, language)} €
           </StyledDataLine>
           <StyledFormButton
             variant="outlined"
@@ -264,12 +273,13 @@ export const BankTransferForm = () => {
 };
 
 const StyledForm = styled("form")({
-  width: "100%",
+  maxWidth: "1108px",
   height: "100vh",
   padding: "2rem 2.5rem",
   borderRadius: "0.5rem",
   display: "flex",
   flexDirection: "column",
+  margin: "0 auto",
 
   "@media (max-width: 1050px)": {
     height: "unset",

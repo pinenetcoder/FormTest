@@ -20,6 +20,7 @@ interface IControllerSelect {
   selectOptions: Array<IAccount>;
   disabled: boolean;
   currentLanguage: string;
+  handler: () => void;
 }
 
 export const ControllerSelect = ({
@@ -31,6 +32,7 @@ export const ControllerSelect = ({
   selectOptions,
   disabled,
   currentLanguage,
+  handler,
   ...rest
 }: IControllerSelect) => {
   const list = selectOptions.map((item) => item.iban);
@@ -53,6 +55,7 @@ export const ControllerSelect = ({
           onBlur={field.onBlur}
           onChange={(e) => {
             field.onChange(e);
+            handler();
           }}
         >
           {list.map((option: string, idx: number) => (
@@ -62,7 +65,8 @@ export const ControllerSelect = ({
               disabled={selectOptions[idx].balance < 0.01}
             >
               {option} (
-              {usFormattedNumber(selectOptions[idx].balance, currentLanguage)})
+              {usFormattedNumber(selectOptions[idx].balance, currentLanguage)}{" "}
+              €)
             </MenuItem>
           ))}
         </StyledSelector>

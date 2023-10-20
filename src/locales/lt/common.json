@@ -3,7 +3,7 @@
     "title": "Naujas mokėjimas",
     "payerAccountLabel": "Mokėtojo sąskaita",
     "transferAmountLabel": "Suma",
-    "transferPurposeLabel": "Perdavimo tikslas",
+    "transferPurposeLabel": "Mokėjimo paskirtis",
     "payeeAccountLabel": "Gavėjo sąskaita",
     "payeeNameLabel": "Gavėjo vardas",
     "sendButton": "Siųsti",
@@ -20,10 +20,10 @@
     "ltIBANFormatWorning": "Laikykitės formato LT ir 18 skaitmenų",
     "max75Chars": "Didžiausias ilgis turi būti 70 ar mažiau simbolių",
 
-    "availableAmmount": "Turima suma",
-    "sendersAccount": "Siuntėjo paskyra",
+    "availableAmmount": "Prieinamas likutis",
+    "sendersAccount": "Mokėjimo paskirtis",
     "recipientName": "Gavėjo vardas",
-    "recipientAccount": "Gavėjo paskyra",
-    "totalToPay": "Iš viso mokėti"
+    "recipientAccount": " Gavėjo sąskaita",
+    "totalToPay": "Mokėjimo paskirtis"
   }
 }
